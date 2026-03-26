@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom"
 import { useRecords } from "../context/RecordsContext"
 import StatusBadge from "../components/StatusBadge"
+import * as api from "../services/api"
 
 export default function Records() {
     const { documents } = useRecords()
     const navigate = useNavigate()
+    const visibleDocs = documents.filter(d => d.status !== "compromised")
 
     const activeCount = documents.filter(d => d.status === "active").length
     const compromisedCount = documents.filter(d => d.status === "compromised").length
@@ -13,10 +15,34 @@ export default function Records() {
     return (
         <div className="p-8">
             {/* Header */}
-            <div className="mb-8">
+            {/* <div className="mb-8">
+                <h2 className="text-3xl font-bold text-slate-900">Records Dashboard</h2>
+                <p className="text-slate-600">Municipal document registry — {documents.length} records on file</p>
+            </div> */}
+            <div className="flex justify-between items-center mb-8">
+  
+<div className="mb-8">
                 <h2 className="text-3xl font-bold text-slate-900">Records Dashboard</h2>
                 <p className="text-slate-600">Municipal document registry — {documents.length} records on file</p>
             </div>
+  <button
+    onClick={async () => {
+      const doc = {
+        id: "doc" + Math.floor(Math.random() * 1000),
+        name: "Demo Document",
+        department: "IT"
+      }
+
+      await api.seedDocuments([doc])
+      await api.uploadDocument(doc.id, "This is demo content for judges.")
+
+      window.location.reload()
+    }}
+    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+  >
+    + Add Demo Document
+  </button>
+</div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mb-8">
@@ -72,6 +98,15 @@ export default function Records() {
                                         </svg>
                                         Open
                                     </button>
+                                    <button
+  onClick={async () => {
+    await api.deleteDocument(doc.id)
+    window.location.reload()
+  }}
+  className="ml-2 px-3 py-1 text-xs bg-red-100 text-red-600 border border-red-200 hover:bg-red-200"
+>
+  Delete
+</button>
                                 </td>
                             </tr>
                         ))}

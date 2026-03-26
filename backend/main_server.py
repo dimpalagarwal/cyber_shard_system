@@ -211,10 +211,29 @@ def simulate_delete(doc_id):
 # Background Auditor
 # ===============================
 
+# def background_verifier():
+#     while True:
+#         for doc_id in list(documents.keys()):
+#             internal_verify(doc_id)
+#         time.sleep(10)
+
 def background_verifier():
     while True:
         for doc_id in list(documents.keys()):
-            internal_verify(doc_id)
+            shard1, shard2 = reconstruct_shards(doc_id)
+
+            if shard1 is None or shard2 is None:
+                documents[doc_id]["status"] = "compromised"
+                continue
+
+            encrypted = shard1 + shard2
+            calculated_hash = hashlib.sha256(encrypted).hexdigest()
+
+            if calculated_hash != documents[doc_id]["hash"]:
+                documents[doc_id]["status"] = "compromised"
+            else:
+                documents[doc_id]["status"] = "active"
+
         time.sleep(10)
 
 threading.Thread(target=background_verifier, daemon=True).start()
