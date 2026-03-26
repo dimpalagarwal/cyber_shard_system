@@ -23,7 +23,7 @@ export default function Records() {
   
 <div className="mb-8">
                 <h2 className="text-3xl font-bold text-slate-900">Records Dashboard</h2>
-                <p className="text-slate-600">Municipal document registry — {documents.length} records on file</p>
+                <p className="text-slate-600">Municipal document registry — {visibleDocs.length} records on file</p>
             </div>
   <button
     onClick={async () => {
@@ -69,7 +69,7 @@ export default function Records() {
                     </thead>
 
                     <tbody>
-                        {documents.map(doc => (
+                        {visibleDocs.map(doc => (
                             <tr key={doc.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                                 <td className="px-6 py-3 font-medium text-slate-900 flex items-center gap-2">
                                     <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 8V6a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2v-2" /><path strokeLinecap="round" strokeLinejoin="round" d="M6 12h6" /></svg>
